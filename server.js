@@ -90,7 +90,7 @@ app.get("/questions", async (req, res, next) => {
 
 app.get("/results", async (req, res, next) => {
     let response = await pool.query("SELECT * FROM results ORDER BY score DESC");
-    console.log(response.rows);
+    //console.log(response.rows);
     let results = response.rows;
     res.status(200).json(results);
 });
@@ -122,19 +122,19 @@ app.post("/mark", async (req, res, next) => {
         console.log("Incoming request", req.body)
         let { firstName, nickName, responses } = req.body;
 
-        console.log(firstName, nickName, responses);
+        //console.log(firstName, nickName, responses);
 
         let question_ids = Object.keys(responses);
         let incorrect = [];
         let score = 0;
         let response = await pool.query("SELECT id, question, answer FROM questions WHERE id = ANY($1)", [question_ids]);
         let answers = response.rows;
-        console.log("answers", answers);
+        //console.log("answers", answers);
 
         for (let id in responses) {
-            console.log("typeof", typeof id)
+            //console.log("typeof", typeof id)
             let correct = answers.find(answer => answer.id === Number(id));
-            console.log("correct", correct)
+            //console.log("correct", correct)
             if (correct.answer === responses[id]) {
                 score += 1;
             }
@@ -142,20 +142,20 @@ app.post("/mark", async (req, res, next) => {
                 incorrect.push(correct);
             }
         }
-        console.log(score);
-        console.log("incorrect", incorrect)
+        //console.log(score);
+        //console.log("incorrect", incorrect)
         let percent_score = Math.round((score / question_ids.length) * 100);
-        console.log("percent", percent_score);
+        //console.log("percent", percent_score);
 
         let newScore = await pool.query("INSERT INTO results (first_name, nick_name, score) VALUES($1, $2, $3) RETURNING *", [firstName, nickName, percent_score]);
-        console.log(newScore.rows[0]);
+        //console.log(newScore.rows[0]);
 
         let feedback = {
             incorrect: incorrect,
             ...newScore.rows[0]
         }
 
-        console.log("feedback", feedback);
+        //console.log("feedback", feedback);
 
         res.status(201).json(feedback);
     }
