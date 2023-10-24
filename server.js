@@ -60,8 +60,12 @@ app.get("/bulkinsert", async (req, res, next) => {
         res.status(500).json({ message: "Bulk insert failed" });
     }
 });*/
-
-
+/*
+app.get("/delete", async(req,res,next)=>{
+    let response = await pool.query("DELETE FROM results WHERE first_name != 'MARO' OR first_name != 'Ruro' " )
+    console.log("done", response);
+    res.status(204).json(response)
+})*/
 
 app.get("/questions", async (req, res, next) => {
     try {
@@ -89,10 +93,17 @@ app.get("/questions", async (req, res, next) => {
 })
 
 app.get("/results", async (req, res, next) => {
-    let response = await pool.query("SELECT * FROM results ORDER BY score DESC");
+    try {
+        let response = await pool.query("SELECT * FROM results ORDER BY score DESC");
     //console.log(response.rows);
     let results = response.rows;
     res.status(200).json(results);
+    }
+    catch(err){
+        console.log(err);
+        res.status(400).json();
+    }
+    
 });
 
 app.get("/result", async (req, res, next) => {
