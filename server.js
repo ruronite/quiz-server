@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.json())
 app.use(cors({
-    origin: "https://worldquizglobal.netlify.app/"
+    origin: "https://worldquizglobal.netlify.app"
 }))
 
 /*
